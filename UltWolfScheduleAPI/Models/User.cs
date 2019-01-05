@@ -15,6 +15,8 @@ namespace UltWolfScheduleAPI.Models
         public string Email { get; set; }
         public ICollection<UserMultipleTask> Tasks { get; } = new List<UserMultipleTask>();
         public ICollection<UserOrdinaryTask> Task { get; } = new List<UserOrdinaryTask>();
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
 
     }
 }

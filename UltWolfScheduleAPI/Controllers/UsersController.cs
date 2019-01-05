@@ -1,126 +1,138 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using UltWolfScheduleAPI.Exceptions;
 using UltWolfScheduleAPI.Models;
 using UltWolfScheduleAPI.Models.Context;
+using UltWolfScheduleAPI.Models.DataModel;
+using UltWolfScheduleAPI.Services;
+using UltWolfScheduleAPI.Services.Abstracts.Interfaces;
 
 namespace UltWolfScheduleAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController : ControllerBase
-    {
-        private readonly ScheduleContext _context;
-
-        public UsersController(ScheduleContext context)
+ 
+        [Authorize]
+        [ApiController]
+        [Route("api/[controller]")]
+        public class UsersController : ControllerBase
         {
-            _context = context;
-        }
 
-        // GET: api/Users
-        [HttpGet]
-        public IEnumerable<User> GetUsers()
-        {
-            return _context.Users;
-        }
-
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
+        private IUserService _userService;
+        private IMapper _autoMapper;
+        private AppSettings _appSettings;
+            public UsersController(
+                IUserService userService, 
+                IOptions<AppSettings> appSettings,
+                IMapper autoMapper)
             {
-                return BadRequest(ModelState);
+                _userService = userService;
+            _autoMapper = autoMapper;
+                _appSettings = appSettings.Value;
             }
 
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
+            [AllowAnonymous]
+            [HttpPost("authenticate")]
+            public IActionResult Authenticate([FromBody]User userDto)
             {
-                return NotFound();
-            }
+                var user = _userService.Authenticate(userDto.Username, userDto.Password);
 
-            return Ok(user);
-        }
+                if (user == null)
+                    return BadRequest(new { message = "Username or password is incorrect" });
 
-        // PUT: api/Users/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] User user)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+                var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    return NotFound();
-                }
-                else
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var tokenString = tokenHandler.WriteToken(token);
+                 
+                return Ok(new
                 {
-                    throw;
+                    Id = user.Id,
+                    Username = user.Username, 
+                    Token = tokenString
+                });
+            }
+
+            [AllowAnonymous]
+            [HttpPost("register")]
+            public IActionResult Register([FromBody]User  userDto )
+            {
+                // map dto to entity
+                var user = _autoMapper.Map<User>(userDto);
+
+                try
+                {
+                    // save 
+                    _userService.Create(user, userDto.Password);
+                    return Ok();
+                }
+                catch (AppException ex)
+                {
+                    // return error message if there was an exception
+                    return BadRequest(new { message = ex.Message });
                 }
             }
 
-            return NoContent();
-        }
-
-        // POST: api/Users
-        [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody] User user)
-        {
-            if (!ModelState.IsValid)
+            [HttpGet]
+            public IActionResult GetAll()
             {
-                return BadRequest(ModelState);
+                var users = _userService.GetAll();
+                var userDtos = this._autoMapper.Map<IList<User>>(users);
+                return Ok(userDtos);
             }
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
-        }
-
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
+            [HttpGet("{id}")]
+            public IActionResult GetById(int id)
             {
-                return BadRequest(ModelState);
+                var user = _userService.GetById(id);
+                var userDto = _autoMapper.Map<User>(user);
+                return Ok(userDto);
             }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            [HttpPut("{id}")]
+            public IActionResult Update(int id, [FromBody]User userDto)
             {
-                return NotFound();
+                // map dto to entity and set id
+                var user = _autoMapper.Map<User>(userDto);
+                user.Id = id;
+
+                try
+                {
+                    // save 
+                    _userService.Update(user, userDto.Password);
+                    return Ok();
+                }
+                catch (AppException ex)
+                {
+                    // return error message if there was an exception
+                    return BadRequest(new { message = ex.Message });
+                }
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
+            [HttpDelete("{id}")]
+            public IActionResult Delete(int id)
+            {
+                _userService.Delete(id);
+                return Ok();
+            }
         }
-
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
-        }
-    }
 }
