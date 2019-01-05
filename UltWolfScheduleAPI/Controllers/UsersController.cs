@@ -13,10 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using UltWolfScheduleAPI.Exceptions;
-using UltWolfScheduleAPI.Models;
-using UltWolfScheduleAPI.Models.Context;
-using UltWolfScheduleAPI.Models.DataModel;
-using UltWolfScheduleAPI.Services;
+using UltWolfScheduleAPI.Models; 
 using UltWolfScheduleAPI.Services.Abstracts.Interfaces;
 
 namespace UltWolfScheduleAPI.Controllers
@@ -75,19 +72,15 @@ namespace UltWolfScheduleAPI.Controllers
             [AllowAnonymous]
             [HttpPost("register")]
             public IActionResult Register([FromBody]User  userDto )
-            {
-                // map dto to entity
-                var user = _autoMapper.Map<User>(userDto);
-
+            { 
+                var user = _autoMapper.Map<User>(userDto); 
                 try
-                {
-                    // save 
+                { 
                     _userService.Create(user, userDto.Password);
                     return Ok();
                 }
                 catch (AppException ex)
-                {
-                    // return error message if there was an exception
+                { 
                     return BadRequest(new { message = ex.Message });
                 }
             }
@@ -99,6 +92,13 @@ namespace UltWolfScheduleAPI.Controllers
                 var userDtos = this._autoMapper.Map<IList<User>>(users);
                 return Ok(userDtos);
             }
+
+        [Authorize]
+            [HttpGet("current")]
+            public IActionResult GetCurrentUser()
+        {
+            return Ok(User.Identity.Name);
+        }
 
             [HttpGet("{id}")]
             public IActionResult GetById(int id)

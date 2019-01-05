@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,7 @@ namespace UltWolfScheduleAPI.Controllers
         {
             return _context.MulTasks;
         }
-
+       
         // GET: api/MultipleTasks/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMultipleTask([FromRoute] int id)
@@ -98,6 +99,7 @@ namespace UltWolfScheduleAPI.Controllers
         }
 
         // DELETE: api/MultipleTasks/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMultipleTask([FromRoute] int id)
         {

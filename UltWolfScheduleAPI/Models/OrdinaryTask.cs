@@ -8,5 +8,6 @@ namespace UltWolfScheduleAPI.Models
     public class OrdinaryTask:Abstracts.AbstractTask
     { 
         public User User { get; set; }
+        public int UserId { get; set; }
     }
 }
