@@ -4,10 +4,11 @@
     <div  *ngFor="let task of Tasks">
       <h5>{{ task.title }}</h5>
 
-      <button (click)="addDone(task)" class="btn btn-success">Done!</button>
+      <button (click)="Add(task)" class="btn btn-success">Add</button>
     </div>
   </div>
-  <div class="create task ">
+  <button (click)="showTask()">Add Task</button>
+  <div class="create_task">
     <h2>Create to do list</h2>
     <input [(ngModel)]="Task.Name" class="form-control" placeholder="name" />
     <input  [(ngModel)]="Task.Description"
@@ -15,11 +16,8 @@
       placeholder="name"
     />
 
-    <button (click)="addTask(Task)" class="btn btn-secondary">Todo!</button>
-  </div>
-</div>
-<div class="done container">
-  <div class="done task">
-    <h2>Done</h2>
+    <input [(ngModel)]="Task.Date" type="datetime"/>
 
-</div>
+    <button (click)="addTask(Task)" class="btn btn-secondary">Add!</button>
+  </div>
+</div> 

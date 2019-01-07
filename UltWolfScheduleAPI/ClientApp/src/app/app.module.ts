@@ -11,15 +11,16 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { LoginComponent } from './authentication-module/login/login.component';
 import { RegistrationComponent } from './authentication-module/registration/registration.component';
-import { AuthenticationModuleModule } from './authentication-module/authentication-module.module';
+import { AuthenticationModuleModule } from './authentication-module/authentication-module.module'; 
+import { MainProfileComponent } from './profile/main-profile/main-profile.component';
+import { ProfileModule } from './profile/profile.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
-
+    CounterComponent, 
     FetchDataComponent
   ],
   imports: [
@@ -27,12 +28,13 @@ import { AuthenticationModuleModule } from './authentication-module/authenticati
     HttpClientModule,
     FormsModule,
     AuthenticationModuleModule,
+    ProfileModule,
     RouterModule.forRoot([
       { path: 'user/login', component: LoginComponent },
       { path: 'user/registration', component: RegistrationComponent },
+      { path: 'profile', component: MainProfileComponent },
       { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-
+      { path: 'fetch-data', component: FetchDataComponent }, 
       { path: '', component: HomeComponent, pathMatch: 'full' }
     ])
   ],

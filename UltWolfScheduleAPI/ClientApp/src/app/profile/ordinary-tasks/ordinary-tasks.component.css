@@ -1,0 +1,14 @@
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import '~open-iconic/font/css/open-iconic-bootstrap.css';
+
+.create_task {
+visibility:hidden;
+width:300px;
+height:400px;
+position:absolute;
+align-self:center;
+vertical-align:central;
+}
+.create_task_model {
+  visibility:visible;
+}
