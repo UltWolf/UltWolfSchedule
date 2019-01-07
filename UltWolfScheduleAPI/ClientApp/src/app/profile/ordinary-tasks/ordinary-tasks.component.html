@@ -1,0 +1,25 @@
+<div class="common ">
+  <div class="column">
+    <h2>Current list</h2>
+    <div  *ngFor="let task of Tasks">
+      <h5>{{ task.title }}</h5>
+
+      <button (click)="addDone(task)" class="btn btn-success">Done!</button>
+    </div>
+  </div>
+  <div class="create task ">
+    <h2>Create to do list</h2>
+    <input [(ngModel)]="Task.Name" class="form-control" placeholder="name" />
+    <input  [(ngModel)]="Task.Description"
+      class="form-control"
+      placeholder="name"
+    />
+
+    <button (click)="addTask(Task)" class="btn btn-secondary">Todo!</button>
+  </div>
+</div>
+<div class="done container">
+  <div class="done task">
+    <h2>Done</h2>
+
+</div>

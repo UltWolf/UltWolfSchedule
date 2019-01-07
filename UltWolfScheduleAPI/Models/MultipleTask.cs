@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 namespace UltWolfScheduleAPI.Models
 {
     public class MultipleTask:Abstracts.AbstractTask
-    {
-        [ForeignKey("User")]
-        public List<User> user { get; set; }
+    { 
+        public ICollection<User> Users { get; set; } = new List<User>();
     }
 }

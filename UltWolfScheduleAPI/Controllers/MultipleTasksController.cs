@@ -22,107 +22,107 @@ namespace UltWolfScheduleAPI.Controllers
             _context = context;
         }
 
-        // GET: api/MultipleTasks
-        [HttpGet]
-        public IEnumerable<MultipleTask> GetMulTasks()
-        {
-            return _context.MulTasks;
-        }
+        //// GET: api/MultipleTasks
+        //[HttpGet]
+        //public IEnumerable<MultipleTask> GetMulTasks()
+        //{
+        //    return _context.MulTasks;
+        //}
        
-        // GET: api/MultipleTasks/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetMultipleTask([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// GET: api/MultipleTasks/5
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetMultipleTask([FromRoute] int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var multipleTask = await _context.MulTasks.FindAsync(id);
+        //    var multipleTask = await _context.MulTasks.FindAsync(id);
 
-            if (multipleTask == null)
-            {
-                return NotFound();
-            }
+        //    if (multipleTask == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return Ok(multipleTask);
-        }
+        //    return Ok(multipleTask);
+        //}
 
-        // PUT: api/MultipleTasks/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMultipleTask([FromRoute] int id, [FromBody] MultipleTask multipleTask)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// PUT: api/MultipleTasks/5
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutMultipleTask([FromRoute] int id, [FromBody] MultipleTask multipleTask)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            if (id != multipleTask.Id)
-            {
-                return BadRequest();
-            }
+        //    if (id != multipleTask.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(multipleTask).State = EntityState.Modified;
+        //    _context.Entry(multipleTask).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MultipleTaskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!MultipleTaskExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        // POST: api/MultipleTasks
-        [HttpPost]
-        public async Task<IActionResult> PostMultipleTask([FromBody] MultipleTask multipleTask)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// POST: api/MultipleTasks
+        //[HttpPost]
+        //public async Task<IActionResult> PostMultipleTask([FromBody] MultipleTask multipleTask)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            _context.MulTasks.Add(multipleTask);
-            await _context.SaveChangesAsync();
+        //    _context.MulTasks.Add(multipleTask);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMultipleTask", new { id = multipleTask.Id }, multipleTask);
-        }
+        //    return CreatedAtAction("GetMultipleTask", new { id = multipleTask.Id }, multipleTask);
+        //}
 
-        // DELETE: api/MultipleTasks/5
-        [Authorize]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMultipleTask([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// DELETE: api/MultipleTasks/5
+        //[Authorize]
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteMultipleTask([FromRoute] int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var multipleTask = await _context.MulTasks.FindAsync(id);
-            if (multipleTask == null)
-            {
-                return NotFound();
-            }
+        //    var multipleTask = await _context.MulTasks.FindAsync(id);
+        //    if (multipleTask == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.MulTasks.Remove(multipleTask);
-            await _context.SaveChangesAsync();
+        //    _context.MulTasks.Remove(multipleTask);
+        //    await _context.SaveChangesAsync();
 
-            return Ok(multipleTask);
-        }
+        //    return Ok(multipleTask);
+        //}
 
-        private bool MultipleTaskExists(int id)
-        {
-            return _context.MulTasks.Any(e => e.Id == id);
-        }
+        //private bool MultipleTaskExists(int id)
+        //{
+        //    return _context.MulTasks.Any(e => e.Id == id);
+        //}
     }
 }

@@ -9,6 +9,9 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { LoginComponent } from './authentication-module/login/login.component';
+import { RegistrationComponent } from './authentication-module/registration/registration.component';
+import { AuthenticationModuleModule } from './authentication-module/authentication-module.module';
 
 @NgModule({
   declarations: [
@@ -16,16 +19,21 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
     NavMenuComponent,
     HomeComponent,
     CounterComponent,
+
     FetchDataComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    AuthenticationModuleModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: 'user/login', component: LoginComponent },
+      { path: 'user/registration', component: RegistrationComponent },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
+
+      { path: '', component: HomeComponent, pathMatch: 'full' }
     ])
   ],
   providers: [],
